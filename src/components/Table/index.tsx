@@ -4,12 +4,30 @@ import { data } from "../../utils/data";
 import "./Table.scss";
 
 export const Table: React.FC = () => {
-  const [activeItem, setActiveItem] = useState<null | number>(null);
+  const [activeItemChild, setActiveItemChild] = useState<null | number>(null);
+  const [activeItemGrandChild, setActiveItemGrandChild] = useState<
+    null | number
+  >(null);
   const [sortActive, setSortActive] = useState(false);
   console.log(data.map((el) => console.log(el)));
 
   const handleClickOpenChild = (id: number): void => {
-    setActiveItem(id);
+    //Проверка, чтобы при повторном нажатии список закрывался.
+    if (id !== activeItemChild) {
+      setActiveItemChild(id);
+    } else {
+      setActiveItemChild(null);
+      setActiveItemGrandChild(null);
+    }
+  };
+
+  const handleClickOpenGrandChild = (id: number): void => {
+    //Та же самая проверка, что и выше.
+    if (id !== activeItemGrandChild) {
+      setActiveItemGrandChild(id);
+    } else {
+      setActiveItemGrandChild(null);
+    }
   };
 
   const handleClickActiveSort = (): void => {
@@ -56,17 +74,40 @@ export const Table: React.FC = () => {
                       <Fragment>
                         <tr
                           key={childPerson.id}
+                          onClick={() =>
+                            handleClickOpenGrandChild(childPerson.id)
+                          }
                           className={`list-of-child ${
-                            activeItem === person.id ||
-                            activeItem === person.parentId
-                              ? "active"
-                              : ""
+                            activeItemChild === person.id ? "active" : ""
                           } `}
                         >
                           <td>{childPerson.name}</td>
                           <td>{childPerson.email}</td>
                           <td>{childPerson.balance}</td>
                         </tr>
+                        {data
+                          .filter((personActive) =>
+                            sortActive ? personActive.isActive : personActive
+                          )
+                          .map(
+                            (grandchildPerson) =>
+                              grandchildPerson.parentId === childPerson.id && (
+                                <Fragment>
+                                  <tr
+                                    key={grandchildPerson.id}
+                                    className={`list-of-child-grand ${
+                                      activeItemGrandChild === childPerson.id
+                                        ? "active"
+                                        : ""
+                                    } `}
+                                  >
+                                    <td>{grandchildPerson.name}</td>
+                                    <td>{grandchildPerson.email}</td>
+                                    <td>{grandchildPerson.balance}</td>
+                                  </tr>
+                                </Fragment>
+                              )
+                          )}
                       </Fragment>
                     )
                 )}
@@ -77,3 +118,17 @@ export const Table: React.FC = () => {
     </div>
   );
 };
+// data.map((grandchildPerson: any) => (
+//   <Fragment>
+//     <tr
+//       key={grandchildPerson.id}
+//       className={`list-of-child ${
+//         activeItemChild === person.id ? "active" : ""
+//       } `}
+//     >
+//       <td>{grandchildPerson.name}</td>
+//       <td>{grandchildPerson.email}</td>
+//       <td>{grandchildPerson.balance}</td>
+//     </tr>
+//   </Fragment>
+// ))

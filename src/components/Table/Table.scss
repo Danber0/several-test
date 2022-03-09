@@ -30,14 +30,18 @@
     .list-of-child {
       display: none;
       font-size: 16px;
-      transition: opacity 0.5s ease-in-out;
       font-weight: 400;
       color: #939393;
+    }
+    .list-of-child-grand {
+      display: none;
+      font-size: 14px;
+      font-weight: 400;
+      color: #acacac;
     }
 
     .active {
       display: table-row;
-      transition: opacity 0.5s ease-in-out;
     }
 
     .person-parent {
